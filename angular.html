@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+
+<div ng-app="myApp">
+  <h1>PokéAPI</h1>
+  <div ng-controller="myCtrl">
+    <p>Name: <input type="text" ng-model="name"></p>
+    <p>Url: <input type="text" ng-model="url"></p>
+    <button ng-click="addPokemon(name, url)">Add Pokemon</button>
+  </div>
+  <hr>
+  <div ng-controller="getData">
+    <ul>
+      <li ng-repeat="poke in pokemon">
+        {{poke}}
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>
+
+<script>
+var app = angular.module('myApp', []);
+app.run(($rootScope)=>{
+    $rootScope.pokemon = [];
+});
+app.controller('myCtrl', ($rootScope, $scope)=>{
+    $scope.addPokemon =  (nameI, urlI)=>{
+      const data = {name: nameI, url: urlI};
+      $rootScope.pokemon.push(data);
+      $scope.name = "";
+      $scope.url = "";
+    }
+});
+app.controller('getData', ($rootScope, $scope, $http)=>{
+  $http.get('https://pokeapi.co/api/v2/pokemon').then((res)=>{
+    $rootScope.pokemon = res.data.results;
+    console.log(res.data);
+  })
+})
+</script>
